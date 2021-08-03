@@ -1,0 +1,97 @@
+openapi: 3.0.2
+info:
+  title: CardEntity feed
+  description: "Manage CardEntity feed"
+  contact:
+    email: kind_arm@yahoo.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 0.0.1-SNAPSHOT
+servers:
+- url: https://localhost:8080/
+tags:
+- name: card
+  description: Operations about card feed
+
+paths:
+  /card:
+    get:
+      tags:
+      - card
+      summary: Get a feed of card
+      operationId: getCard
+      parameters:
+      - name: username
+        in: query
+        description: 'The user for whom the feed of card should be returned.'
+        required: true
+        schema:
+          type: string
+      - name: cardtype
+        in: query
+        description: 'The card type of the feed.'
+        required: true
+        schema:
+          $ref: '#/components/schemas/CardType'
+      - name: cardsubtype
+        in: query
+        description: 'The card subtype of the feed. This parameter  makes sense only if cardtype="STATUS".'
+        required: false
+        schema:
+          $ref: '#/components/schemas/CardSubType'
+      responses:
+        200:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CardResponse'
+        400:
+          description: Invalid input parameter
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        404:
+          description: User or Card is not found not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    CardResponse:
+      type: object
+      properties:
+        title:
+          type: string
+        message:
+          type: string
+        author:
+          type: string
+        icon:
+          type: string
+        button:
+          type: string
+    CardType:
+      type: string
+      enum:
+        - DAILY
+        - STATUS
+    CardSubType:
+      type: string
+      nullable: true
+      enum:
+      - FULL
+      - ICON
+      - BUTTON
+    Error:
+      type: object
+      properties:
+        source:
+          type: string
+        reasonCode:
+          type: string
+        description:
+          type: string
